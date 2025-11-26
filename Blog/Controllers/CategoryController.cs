@@ -1,5 +1,4 @@
 ﻿using Blog.Controllers.Contracts;
-using Blog.Models;
 using Blog.Models.DTOs;
 using Blog.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +17,10 @@ public class CategoryController : ControllerBase, ICategoryController
 	}
 
 	[HttpGet]
+	[Route("HeartBeat")]
 	public ActionResult HeartBeat()
 	{
-		return Ok("Online");
+		return Ok("Still alive!");
 	}
 
 	[HttpGet]
@@ -34,7 +34,7 @@ public class CategoryController : ControllerBase, ICategoryController
 
 	[HttpGet]
 	[Route("Get/{slug}")]
-	public async Task<ActionResult<Category>> GetBySlug(string slug)
+	public async Task<ActionResult<CategoryResponseDTO>> GetBySlug(string slug)
 	{
 		try
 		{
@@ -60,6 +60,24 @@ public class CategoryController : ControllerBase, ICategoryController
 		{
 			await _categoryService.CreateSlugAsync(category);
 			return Created();
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, ex.Message);
+		}
+	}
+
+	[HttpPut]
+	[Route("Update/{slug}")]
+	public async Task<ActionResult<CategoryResponseDTO>> UpdateCategory(string slug, CategoryRequestDTO category)
+	{
+		try
+		{
+			if (await _categoryService.GetBySlugAsync(slug) is null)
+				return NotFound("Register not found!");
+
+			await _categoryService.UpdateCategoryAsync(slug, category);
+			return Ok(await _categoryService.GetBySlugAsync(slug));
 		}
 		catch (Exception ex)
 		{
