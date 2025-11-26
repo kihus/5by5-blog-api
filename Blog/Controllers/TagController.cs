@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blog.Controllers
+namespace Blog.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class TagController : ControllerBase
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class TagController : ControllerBase
-	{
-	}
 }
