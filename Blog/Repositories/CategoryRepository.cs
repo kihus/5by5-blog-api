@@ -26,13 +26,13 @@ public class CategoryRepository : ICategoryRepository
 
 	}
 
-	public async Task<Category?> GetBySlugAsync(string slug)
+	public async Task<CategoryResponseDTO?> GetBySlugAsync(string slug)
 	{
 		var sql = "SELECT Name, Slug FROM Category WHERE Slug = @Slug";
 
 		using (var con = _connection.GetConnection())
 		{
-			return await con.QueryFirstOrDefaultAsync<Category>(sql, new { slug });
+			return await con.QueryFirstOrDefaultAsync<CategoryResponseDTO>(sql, new { slug });
 		}
 	}
 
@@ -40,19 +40,29 @@ public class CategoryRepository : ICategoryRepository
 	{
 		var sql = "INSERT INTO Category (Name, Slug) VALUES (@Name, @Slug)";
 
-		await using (var con = _connection.GetConnection())
+		using (var con = _connection.GetConnection())
 		{
 			await con.ExecuteAsync(sql, new { category.Name, category.Slug });
 		}
 	}
 
+	public async Task UpdateCategoryAsync(Category category)
+	{
+		var sql = "UPDATE Category SET Name = @Name WHERE Slug = @Slug";
+
+		using (var con = _connection.GetConnection())
+		{
+			await con.ExecuteAsync(sql, new { category.Name, category.Slug });
+		}
+	}
 	public async Task DeleteCategoryAsync(string slug)
 	{
 		var sql = "DELETE FROM Category WHERE Slug = @Slug";
 
-		await using (var con = _connection.GetConnection())
+		using (var con = _connection.GetConnection())
 		{
 			await con.ExecuteAsync(sql, new { slug });
 		}
 	}
+
 }
