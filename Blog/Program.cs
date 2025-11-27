@@ -7,11 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 builder.Services.AddScoped<ConnectionDB>();
+
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<CategoryService>();
+
 builder.Services.AddScoped<TagRepository>();
 builder.Services.AddScoped<TagService>();
+
+builder.Services.AddScoped<RoleRepository>();
+builder.Services.AddScoped<RoleService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
