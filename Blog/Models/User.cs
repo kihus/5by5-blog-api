@@ -16,4 +16,5 @@ public class User(
 	public string? Bio { get; private set; } = bio;
 	public string? Image { get; private set; } = image;
 	public string Slug { get; private set; } = slug;
+	public List<Role> Roles { get; private set; }
 }

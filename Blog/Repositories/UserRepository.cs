@@ -74,4 +74,24 @@ public class UserRepository
 			await con.ExecuteAsync(sql, new { slug });
 		}
 	}
+
+	public async Task<List<User>> GetAllUserRoles()
+	{
+		IEnumerable<User> userRoles = new List<User>();
+		var sql = "SELECT * FROM [User] u JOIN [UserRole] ur ON u.Id = ur.UserId JOIN [Role] r ON r.Id = ur.RoleId";
+
+		using (var con = _connection.GetConnection())
+		{
+			userRoles = await con.QueryAsync<User, Role, User>(
+				sql,
+				(user, role) =>
+				{
+					user.Roles.Add(role);
+					return user;
+				},
+				splitOn: "Id"
+			);
+		}
+		return userRoles.ToList();
+	}
 }
