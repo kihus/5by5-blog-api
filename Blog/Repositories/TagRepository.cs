@@ -1,10 +1,8 @@
-﻿using Azure;
-using Blog.Data;
+﻿using Blog.Data;
 using Blog.Models;
 using Blog.Models.DTOs;
 using Blog.Repositories.Contracts;
 using Dapper;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Repositories
 {
