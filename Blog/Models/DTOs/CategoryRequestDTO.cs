@@ -2,5 +2,5 @@
 
 public class CategoryRequestDTO
 {
-	public string Name { get; set; }
+	public string Name { get; init; } = string.Empty;
 }

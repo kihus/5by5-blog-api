@@ -19,6 +19,9 @@ builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<RoleRepository>();
 builder.Services.AddScoped<RoleService>();
 
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<UserService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
