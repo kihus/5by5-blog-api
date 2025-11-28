@@ -74,4 +74,59 @@ public class UserRepository
 			await con.ExecuteAsync(sql, new { slug });
 		}
 	}
+
+	public async Task<List<UserRoleResponseDTO>> GetAllUserRoles()
+	{
+		IEnumerable<UserRoleResponseDTO> userRoles = new List<UserRoleResponseDTO>();
+		var sql = @"SELECT u.[Id], u.[Name], u.[Email], u.[Bio], u.[Image], u.[Slug], r.[Id], r.[Name], r.[Slug] 
+					FROM [User] u 
+					JOIN [UserRole] ur 
+					ON u.Id = ur.UserId 
+					JOIN [Role] r 
+					ON r.Id = ur.RoleId";
+
+		using (var con = _connection.GetConnection())
+		{
+			userRoles = await con.QueryAsync<UserRoleResponseDTO, UserRoleDTO, UserRoleResponseDTO>(
+				sql,
+				(user, role) =>
+				{
+					user.Roles.Add(role);
+					return user;
+				},
+				splitOn: "Id"
+			);
+		}
+		return userRoles.ToList();
+	}
+
+	public async Task<IEnumerable<UserRoleResponseDTO?>> GetUserRoleBySlug(string slug)
+	{
+		var sql = @"SELECT u.[Id], u.[Name], u.[Email], u.[Bio], u.[Image], u.[Slug], r.[Id], r.[Name], r.[Slug] 
+					FROM [User] u 
+					JOIN [UserRole] ur 
+					ON u.Id = ur.UserId 
+					JOIN [Role] r 
+					ON r.Id = ur.RoleId
+					WHERE u.Slug = @Slug";
+
+		IEnumerable<UserRoleResponseDTO> userRole = new List<UserRoleResponseDTO>();
+
+		using (var con = _connection.GetConnection())
+		{
+			userRole = await con.QueryAsync<UserRoleResponseDTO, UserRoleDTO, UserRoleResponseDTO>(
+				sql,
+				(user, role) =>
+				{
+					user.Roles.Add(role);
+					return user;
+				},
+				new { slug },
+				splitOn: "Id"
+
+			);
+		}
+
+		return userRole.ToList();
+	}
 }
