@@ -35,6 +35,50 @@ public class RoleRepository : IRoleRepository
 		}
 	}
 
+	public async Task<List<RoleUserResponseDTO>> GetAllRolesUsers()
+	{
+		IEnumerable<RoleUserResponseDTO> roleUser = new List<RoleUserResponseDTO>();
+		var sql = @"SELECT  r.[Id], r.[Name], r.[Slug], u.[Id], u.[Name], u.[Email], u.[Bio], u.[Image], u.[Slug]
+					FROM [Role] r 
+					JOIN [UserRole] ur 
+					ON r.Id = ur.UserId 
+					JOIN [User] u 
+					ON u.Id = ur.RoleId";
+
+		using (var con = _connection.GetConnection())
+		{
+			roleUser = await con.QueryAsync<RoleUserResponseDTO, RoleUserDTO, RoleUserResponseDTO>(
+				sql,
+				(role, user) => { role.Users.Add(user); return role; },
+				splitOn: "Id"
+			);
+		}
+		return roleUser.ToList();
+	}
+
+	public async Task<List<RoleUserResponseDTO?>> GetRoleUserBySlug(string slug)
+	{
+		IEnumerable<RoleUserResponseDTO> roleUser = new List<RoleUserResponseDTO>();
+		var sql = @"SELECT  r.[Id], r.[Name], r.[Slug], u.[Id], u.[Name], u.[Email], u.[Bio], u.[Image], u.[Slug]
+					FROM [Role] r 
+					JOIN [UserRole] ur 
+					ON r.Id = ur.UserId 
+					JOIN [User] u 
+					ON u.Id = ur.RoleId
+					WHERE r.Slug = @Slug";
+
+		using (var con = _connection.GetConnection())
+		{
+			roleUser = await con.QueryAsync<RoleUserResponseDTO, RoleUserDTO, RoleUserResponseDTO>(
+				sql,
+				(role, user) => { role.Users.Add(user); return role; },
+				new {slug},
+				splitOn: "Id"
+			);
+		}
+		return roleUser.ToList();
+	}
+
 	public async Task CreateRoleAsync(Role role)
 	{
 		var sql = "INSERT INTO Role (Name, Slug) VALUES (@Name, @Slug)";

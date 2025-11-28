@@ -61,6 +61,46 @@ public class RoleController : ControllerBase
 		}
 	}
 
+	[HttpGet]
+	[Route("GetAll/Role-User")]
+	public async Task<ActionResult<List<RoleUserResponseDTO>>> GetAllRolesUsers()
+	{
+		try
+		{
+			var role = await _service.GetAllRolesUsers();
+
+			if (role is null)
+				return NotFound("Register not found!");
+
+			return role;
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, ex.Message);
+		}
+	}
+
+	[HttpGet]
+	[Route("GetAll/Role-User/{slug}")]
+	public async Task<ActionResult<RoleUserResponseDTO>> GetRoleUserBySlug(string slug)
+	{
+		try
+		{
+			var role = await _service.GetRoleUserBySlug(slug);
+
+			if (role is null)
+				return NotFound("Register not found!");
+
+			return role;
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, ex.Message);
+		}
+	}
+
+
+
 	[HttpPost]
 	[Route("Create")]
 	public async Task<ActionResult> CreateRole(RoleRequestDTO role)

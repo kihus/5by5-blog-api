@@ -24,6 +24,34 @@ public class RoleService : IRoleService
 		return await _repository.GetBySlugAsync(slug);
 	}
 
+	public async Task<List<RoleUserResponseDTO>> GetAllRolesUsers()
+	{
+		var roleUser = await _repository.GetAllRolesUsers();
+
+		var result = roleUser.GroupBy(r => r.Id).Select(g =>
+		{
+			var groupedRole = g.First();
+			groupedRole.Users = (g.Select(u => u.Users.Single())).ToList();
+			return groupedRole;
+		});
+
+		return result.ToList();
+	}
+
+	public async Task<RoleUserResponseDTO?> GetRoleUserBySlug(string slug)
+	{
+		var roleUser = await _repository.GetRoleUserBySlug(slug);
+
+		var result = roleUser.GroupBy(r => r.Id).Select(g =>
+		{
+			var groupedRole = g.First();
+			groupedRole.Users = (g.Select(u => u.Users.Single())).ToList();
+			return groupedRole;
+		});
+
+		return result.FirstOrDefault(x => x.Slug == slug);
+	}
+
 	public async Task CreateRoleAsync(RoleRequestDTO role)
 	{
 		var newRole = new Role(

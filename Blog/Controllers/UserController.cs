@@ -33,7 +33,7 @@ namespace Blog.Controllers
 				if (users.Count is 0)
 					return NotFound("Register not found!");
 
-				return users;
+				return Ok(users);
 			}
 			catch (Exception ex)
 			{
@@ -52,7 +52,46 @@ namespace Blog.Controllers
 				if (user is null)
 					return NotFound("Register not found!");
 
-				return user;
+				return Ok(user);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
+
+		[HttpGet]
+		[Route("GetAll/User-Role")]
+		public async Task<ActionResult<List<UserRoleResponseDTO>>> GetAllUserRole()
+		{
+			try
+			{
+				var userRoles = await _service.GetAllUserRoles();
+
+				if (userRoles is null)
+					return NotFound("Register not found!");
+
+				return Ok(userRoles);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
+
+
+		[HttpGet]
+		[Route("GetAll/User-Role/{slug}")]
+		public async Task<ActionResult<UserRoleResponseDTO>> GetUserRoleBySlug(string slug)
+		{
+			try
+			{
+				var userRoles = await _service.GetUserRoleBySlug(slug);
+
+				if (userRoles is null)
+					return NotFound("Register not found!");
+
+				return Ok(userRoles);
 			}
 			catch (Exception ex)
 			{

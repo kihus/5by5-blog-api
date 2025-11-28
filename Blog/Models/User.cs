@@ -3,7 +3,7 @@
 public class User(
 	string name,
 	string email,
-	string password,
+	string passwordHash,
 	string? bio,
 	string? image,
 	string slug
@@ -12,9 +12,15 @@ public class User(
 	public int Id { get; private set; }
 	public string Name { get; private set; } = name;
 	public string Email { get; private set; } = email;
-	public string PasswordHash { get; private set; } = password;
+	public string PasswordHash { get; private set; } = passwordHash;
 	public string? Bio { get; private set; } = bio;
 	public string? Image { get; private set; } = image;
 	public string Slug { get; private set; } = slug;
-	public List<Role> Roles { get; private set; }
+	public List<Role> Roles { get; private set; } = [];
+
+	public void SetId(int id)
+	{
+		Id = id;
+	}
+
 }

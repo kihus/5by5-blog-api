@@ -1,7 +1,8 @@
-﻿using Blog.Models;
+﻿using BCrypt.Net;
+using Blog.Models;
 using Blog.Models.DTOs;
 using Blog.Repositories;
-using BCrypt.Net;
+using Microsoft.Extensions.Hosting;
 using static BCrypt.Net.BCrypt;
 
 namespace Blog.Services;
@@ -23,6 +24,34 @@ public class UserService
 	public async Task<UserResponseDTO?> GetUserBySlug(string slug)
 	{
 		return await _repository.GetUserBySlugAsync(slug);
+	}
+
+	public async Task<List<UserRoleResponseDTO>> GetAllUserRoles()
+	{
+		var usersRoles = await _repository.GetAllUserRoles();
+
+		var result = usersRoles.GroupBy(p => p.Id).Select(g =>
+		{
+			var groupedUser = g.First();
+			groupedUser.Roles = (g.Select(r => r.Roles.Single())).ToList(); ;
+			return groupedUser;
+		});
+		
+		return result.ToList();
+	}
+
+	public async Task<UserRoleResponseDTO?> GetUserRoleBySlug(string slug)
+	{
+		var userRole = await _repository.GetUserRoleBySlug(slug);
+
+		var result = userRole.GroupBy(p => p.Id).Select(g =>
+		{
+			var groupedUser = g.First();
+			groupedUser.Roles = (g.Select(r => r.Roles.Single())).ToList(); ;
+			return groupedUser;
+		});
+
+		return result.FirstOrDefault(x => x.Slug == slug);
 	}
 
 	public async Task CreateUserAsync(UserRequestDTO userRequest)
@@ -48,18 +77,18 @@ public class UserService
 			userPassword = HashPassword(userRequest.Password, _workFactor);
 
 		var newUser = new User(
-			string.IsNullOrEmpty(userRequest.Name) 
-									? user.Name 
+			string.IsNullOrEmpty(userRequest.Name)
+									? user.Name
 									: userRequest.Name,
-			string.IsNullOrEmpty(userRequest.Email) 
-									? user.Email 
+			string.IsNullOrEmpty(userRequest.Email)
+									? user.Email
 									: userRequest.Email,
 			userPassword,
-			string.IsNullOrEmpty(userRequest.Image) 
-									? user.Image 
+			string.IsNullOrEmpty(userRequest.Image)
+									? user.Image
 									: userRequest.Image,
-			string.IsNullOrEmpty(userRequest.Bio) 
-									? user.Bio 
+			string.IsNullOrEmpty(userRequest.Bio)
+									? user.Bio
 									: userRequest.Bio,
 			user.Slug
 			);
