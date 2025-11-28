@@ -6,7 +6,7 @@ public class Post(
 	string title, 
 	string summary, 
 	string body, 
-	DateTime updateDate
+	string slug
 	)
 {
 	public int Id { get; private set; }
@@ -15,7 +15,8 @@ public class Post(
 	public string Title { get; private set; } = title;
 	public string Summary { get; private set; } = summary;
 	public string Body { get; private set; } = body;
-	public DateTime CreateDate { get; private set; } = DateTime.Now;
-	public DateTime UpdateDate { get; private set; } = updateDate;
+	public string Slug { get; private set; } = slug;
+	public DateTime CreateDate { get; private set; }
+	public DateTime UpdateDate { get; private set; }
 	public List<Tag> Tags { get; private set; } = [];
 }

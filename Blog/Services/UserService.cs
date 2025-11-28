@@ -1,13 +1,12 @@
-﻿using BCrypt.Net;
-using Blog.Models;
+﻿using Blog.Models;
 using Blog.Models.DTOs;
 using Blog.Repositories;
-using Microsoft.Extensions.Hosting;
+using Blog.Services.Contracts;
 using static BCrypt.Net.BCrypt;
 
 namespace Blog.Services;
 
-public class UserService
+public class UserService : IUserService
 {
 	private readonly UserRepository _repository;
 	private const int _workFactor = 12;
@@ -52,6 +51,11 @@ public class UserService
 		});
 
 		return result.FirstOrDefault(x => x.Slug == slug);
+	}
+
+	public async Task<string?> GetAuthorById(int id)
+	{
+		return await _repository.GetAuthorById(id);
 	}
 
 	public async Task CreateUserAsync(UserRequestDTO userRequest)

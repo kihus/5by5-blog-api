@@ -22,6 +22,9 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<PostService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,11 +1,12 @@
 ﻿using Blog.Data;
 using Blog.Models;
 using Blog.Models.DTOs;
+using Blog.Repositories.Contracts;
 using Dapper;
 
 namespace Blog.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
 	private readonly ConnectionDB _connection;
 
@@ -31,6 +32,16 @@ public class UserRepository
 		using (var con = _connection.GetConnection())
 		{
 			return await con.QueryFirstOrDefaultAsync<UserResponseDTO>(sql, new { slug });
+		}
+	}
+
+	public async Task<string?> GetAuthorById(int id)
+	{
+		var sql = @"SELECT Name FROM [User] WHERE Id = @Id";
+
+		using (var con = _connection.GetConnection())
+		{
+			return await con.QueryFirstOrDefaultAsync<string>(sql);
 		}
 	}
 
